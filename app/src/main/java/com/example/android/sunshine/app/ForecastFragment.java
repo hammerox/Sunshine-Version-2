@@ -78,8 +78,6 @@ public class ForecastFragment extends Fragment {
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
         listView.setAdapter(mForecastAdapter);
 
-        new FetchWeatherTask().execute();
-
         return rootView;
     }
 
@@ -206,9 +204,19 @@ public class ForecastFragment extends Fragment {
         }
 
 
+        @Override
+        protected void onPostExecute(String[] strings) {
+            super.onPostExecute(strings);
+            mForecastAdapter.clear();
+            for (String s : strings) {
+                mForecastAdapter.add(s);
+            }
+            mForecastAdapter.notifyDataSetChanged();
+        }
+
         /* The date/time conversion code is going to be moved outside the asynctask later,
-         * so for convenience we're breaking it out into its own method now.
-         */
+                 * so for convenience we're breaking it out into its own method now.
+                 */
         private String getReadableDateString(long time){
             // Because the API returns a unix timestamp (measured in seconds),
             // it must be converted to milliseconds in order to be converted to valid date.
@@ -300,9 +308,6 @@ public class ForecastFragment extends Fragment {
                 resultStrs[i] = day + " - " + description + " - " + highAndLow;
             }
 
-            for (String s : resultStrs) {
-                Log.v("test", "Forecast entry: " + s);
-            }
             return resultStrs;
 
         }
