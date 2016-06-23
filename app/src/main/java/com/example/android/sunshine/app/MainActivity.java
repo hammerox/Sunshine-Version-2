@@ -8,6 +8,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 
@@ -64,6 +66,15 @@ public class MainActivity extends ActionBarActivity {
             fakeData.add("Oi");
             fakeData.add("Tudo bem?");
             fakeData.add("Como você está?");
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                    getActivity(),
+                    R.layout.list_item_forecast,
+                    R.id.list_item_forecast_textview,
+                    fakeData);
+
+            ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
+            listView.setAdapter(adapter);
 
             return rootView;
         }
