@@ -222,7 +222,16 @@ public class ForecastFragment extends Fragment {
         protected void onPostExecute(String[] strings) {
             super.onPostExecute(strings);
             mForecastAdapter.clear();
+
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String selectedTemp = prefs.getString(
+                    getString(R.string.pref_temperature_key), "0");
+
             for (String s : strings) {
+                if (selectedTemp.matches("1")) {
+                    s = TemperatureConverter.metricToImperial(s);
+                }
+
                 mForecastAdapter.add(s);
             }
             mForecastAdapter.notifyDataSetChanged();

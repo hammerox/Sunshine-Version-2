@@ -66,5 +66,7 @@
     <string name="pref_location_title">Location</string>
     <string name="pref_location_key">location</string>
     <string name="pref_location_default">13083130</string>
+    <string name="pref_temperature_title">Temperature Units</string>
+    <string name="pref_temperature_key">temperature</string>
 
 </resources>
