@@ -1,9 +1,11 @@
 package com.example.android.sunshine.app;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
 import android.util.Log;
@@ -48,32 +50,23 @@ public class ForecastFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // Create some dummy data for the ListView.  Here's a sample weekly forecast
-        String[] data = {
-                "Mon 6/23 - Sunny - 31/17",
-                "Tue 6/24 - Foggy - 21/8",
-                "Wed 6/25 - Cloudy - 22/17",
-                "Thurs 6/26 - Rainy - 18/11",
-                "Fri 6/27 - Foggy - 21/10",
-                "Sat 6/28 - TRAPPED IN WEATHERSTATION - 23/18",
-                "Sun 6/29 - Sunny - 20/7"
-        };
-        List<String> weekForecast = new ArrayList<>(Arrays.asList(data));
-
-
-        // Now that we have some dummy forecast data, create an ArrayAdapter.
-        // The ArrayAdapter will take data from a source (like our dummy forecast) and
-        // use it to populate the ListView it's attached to.
         mForecastAdapter =
                 new ArrayAdapter<>(
                         getActivity(), // The current context (this activity)
                         R.layout.list_item_forecast, // The name of the layout ID.
                         R.id.list_item_forecast_textview, // The ID of the textview to populate.
-                        weekForecast);
+                        new ArrayList<String>());
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
@@ -107,17 +100,27 @@ public class ForecastFragment extends Fragment {
 
         switch (id) {
             case R.id.action_refresh:
-                new FetchWeatherTask().execute();
+                updateWeather();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+
+    public void updateWeather() {
+        SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences(getActivity());
+        String postalCode = prefs.getString(
+                getString(R.string.pref_location_key),
+                getString(R.string.pref_location_default));
+
+        new FetchWeatherTask().execute(postalCode);
+    }
+
+
     public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
-        final private String LATITUDE = "-22.807073";
-        final private String LONGITUDE = "-47.068733";
         final private String MODE = "json";
         final private String UNITS = "metric";
         final private String DAYS = "7";
@@ -146,11 +149,10 @@ public class ForecastFragment extends Fragment {
                         .appendPath("forecast")
                         .appendPath("daily");
 
-                if (objects.length < 0) {
+                if (objects.length > 1) {
                     builder.appendQueryParameter("q", objects[0]);
                 } else {
-                    builder.appendQueryParameter("lat", LATITUDE)
-                            .appendQueryParameter("lon", LONGITUDE);
+                    builder.appendQueryParameter("q", "13083130");
                 }
 
                 builder.appendQueryParameter("mode", MODE)
