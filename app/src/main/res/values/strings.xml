@@ -70,5 +70,6 @@
     <string name="pref_temperature_key">temperature</string>
     <string name="action_map">Show location</string>
     <string name="action_refresh">Refresh</string>
+    <string name="action_share">Share</string>
 
 </resources>

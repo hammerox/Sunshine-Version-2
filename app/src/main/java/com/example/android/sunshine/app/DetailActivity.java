@@ -3,9 +3,12 @@ package com.example.android.sunshine.app;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +57,15 @@ public class DetailActivity extends ActionBarActivity {
      */
     public static class PlaceholderFragment extends Fragment {
 
+        private ShareActionProvider mShareActionProvider;
+
         public PlaceholderFragment() {
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setHasOptionsMenu(true);
         }
 
         @Override
@@ -69,5 +80,41 @@ public class DetailActivity extends ActionBarActivity {
 
             return rootView;
         }
+
+
+        @Override
+        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+            super.onCreateOptionsMenu(menu, inflater);
+            inflater.inflate(R.menu.details_fragment, menu);
+
+            MenuItem shareItem = menu.findItem(R.id.action_share);
+            mShareActionProvider =
+                    (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
+
+            String forecastString = getActivity().getIntent().getStringExtra(Intent.EXTRA_TEXT);
+            forecastString = forecastString + " #SunshineApp";
+
+            Intent mShareIntent = new Intent(Intent.ACTION_SEND);
+            mShareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+            mShareIntent.setType("text/plain");
+            mShareIntent.putExtra(Intent.EXTRA_STREAM, forecastString);
+
+            mShareActionProvider.setShareIntent(mShareIntent);
+        }
+
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            int id = item.getItemId();
+
+            switch (id) {
+                case R.id.action_share:
+
+                    return true;
+            }
+
+            return super.onOptionsItemSelected(item);
+        }
+
     }
 }
