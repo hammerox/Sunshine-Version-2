@@ -54,11 +54,7 @@ public class MainActivity extends ActionBarActivity {
 
         switch (id) {
             case R.id.action_map:
-                SharedPreferences prefs = PreferenceManager
-                        .getDefaultSharedPreferences(this);
-                String postalCode = prefs.getString(
-                        getString(R.string.pref_location_key),
-                        getString(R.string.pref_location_default));
+                String postalCode = Utility.getPreferredLocation(this);
                 Uri geoLocation = Uri.parse("geo:0,0?").buildUpon()
                         .appendQueryParameter("q", postalCode)
                         .build();
