@@ -80,12 +80,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
 
     @Override
-    public void onStart() {
-        super.onStart();
-        updateWeather();
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -165,5 +159,11 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
 
         return new CursorLoader(getActivity(), uri, FORECAST_COLUMNS, null, null, sortOrder);
+    }
+
+
+    public void onLocationChanged() {
+        updateWeather();
+        getLoaderManager().restartLoader(FORECAST_LOADER_ID, null, this);
     }
 }
