@@ -29,7 +29,7 @@ public class ForecastAdapter extends CursorAdapter {
      */
     private String formatHighLows(double high, double low) {
         boolean isMetric = Utility.isMetric(mContext);
-        String highLowStr = Utility.formatTemperature(high, isMetric) + "/" + Utility.formatTemperature(low, isMetric);
+        String highLowStr = Utility.formatTemperature(mContext, high, isMetric) + "/" + Utility.formatTemperature(mContext, low, isMetric);
         return highLowStr;
     }
 
@@ -96,9 +96,11 @@ public class ForecastAdapter extends CursorAdapter {
                 cursor.getLong(ForecastFragment.COL_WEATHER_DATE));
         String forecast = cursor.getString(ForecastFragment.COL_WEATHER_DESC);
         String max = Utility.formatTemperature(
+                context,
                 cursor.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP),
                 true);
         String min = Utility.formatTemperature(
+                context,
                 cursor.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP),
                 true);
 
