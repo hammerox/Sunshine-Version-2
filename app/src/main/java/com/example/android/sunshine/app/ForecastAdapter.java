@@ -6,6 +6,7 @@ package com.example.android.sunshine.app;
         import android.view.LayoutInflater;
         import android.view.View;
         import android.view.ViewGroup;
+        import android.widget.ImageView;
         import android.widget.TextView;
 
         import com.example.android.sunshine.app.data.WeatherContract;
@@ -15,6 +16,9 @@ package com.example.android.sunshine.app;
  * from a {@link android.database.Cursor} to a {@link android.widget.ListView}.
  */
 public class ForecastAdapter extends CursorAdapter {
+
+    private final static int VIEW_TYPE_TODAY = 0;
+    private final static int VIEW_TYPE_FUTURE_DAY = 1;
 
     public ForecastAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
@@ -44,14 +48,36 @@ public class ForecastAdapter extends CursorAdapter {
                 " - " + highAndLow;
     }
 
+
+    @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0) {
+            return VIEW_TYPE_TODAY;
+        } else {
+            return VIEW_TYPE_FUTURE_DAY;
+        }
+
+    }
+
     /*
-        Remember that these views are reused as needed.
-     */
+            Remember that these views are reused as needed.
+         */
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View view = LayoutInflater.from(context).inflate(R.layout.list_item_forecast, parent, false);
+        int layoutId = -1;
 
-        return view;
+        if (getItemViewType(cursor.getPosition()) == VIEW_TYPE_TODAY) {
+            layoutId = R.layout.list_item_forecast_today;
+        } else {
+            layoutId = R.layout.list_item_forecast;
+        }
+        
+        return LayoutInflater.from(context).inflate(layoutId, parent, false);
     }
 
     /*
@@ -62,7 +88,26 @@ public class ForecastAdapter extends CursorAdapter {
         // our view is pretty simple here --- just a text view
         // we'll keep the UI functional with a simple (and slow!) binding.
 
-//        TextView tv = (TextView)view;
-//        tv.setText(convertCursorRowToUXFormat(cursor));
+        ImageView iconView = (ImageView) view.findViewById(R.id.list_item_icon);
+        TextView dateView = (TextView) view.findViewById(R.id.list_item_date_textview);
+        TextView forecastView = (TextView) view.findViewById(R.id.list_item_forecast_textview);
+        TextView maxView = (TextView) view.findViewById(R.id.list_item_high_textview);
+        TextView minView = (TextView) view.findViewById(R.id.list_item_low_textview);
+
+        String date = Utility.getFriendlyDayString(context,
+                cursor.getLong(ForecastFragment.COL_WEATHER_DATE));
+        String forecast = cursor.getString(ForecastFragment.COL_WEATHER_DESC);
+        String max = Utility.formatTemperature(
+                cursor.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP),
+                true);
+        String min = Utility.formatTemperature(
+                cursor.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP),
+                true);
+
+        dateView.setText(date);
+        forecastView.setText(forecast);
+        maxView.setText(max);
+        minView.setText(min);
+
     }
 }
