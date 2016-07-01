@@ -76,8 +76,12 @@ public class ForecastAdapter extends CursorAdapter {
         } else {
             layoutId = R.layout.list_item_forecast;
         }
-        
-        return LayoutInflater.from(context).inflate(layoutId, parent, false);
+
+        View view = LayoutInflater.from(context).inflate(layoutId, parent, false);
+        ViewHolder viewHolder = new ViewHolder(view);
+        view.setTag(viewHolder);
+
+        return view;
     }
 
     /*
@@ -87,12 +91,6 @@ public class ForecastAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         // our view is pretty simple here --- just a text view
         // we'll keep the UI functional with a simple (and slow!) binding.
-
-        ImageView iconView = (ImageView) view.findViewById(R.id.list_item_icon);
-        TextView dateView = (TextView) view.findViewById(R.id.list_item_date_textview);
-        TextView forecastView = (TextView) view.findViewById(R.id.list_item_forecast_textview);
-        TextView maxView = (TextView) view.findViewById(R.id.list_item_high_textview);
-        TextView minView = (TextView) view.findViewById(R.id.list_item_low_textview);
 
         String date = Utility.getFriendlyDayString(context,
                 cursor.getLong(ForecastFragment.COL_WEATHER_DATE));
@@ -104,10 +102,29 @@ public class ForecastAdapter extends CursorAdapter {
                 cursor.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP),
                 true);
 
-        dateView.setText(date);
-        forecastView.setText(forecast);
-        maxView.setText(max);
-        minView.setText(min);
+        ViewHolder viewHolder = (ViewHolder) view.getTag();
 
+        viewHolder.dateView.setText(date);
+        viewHolder.forecastView.setText(forecast);
+        viewHolder.maxView.setText(max);
+        viewHolder.minView.setText(min);
+
+    }
+
+
+    public class ViewHolder {
+        public final ImageView iconView;
+        public final TextView dateView;
+        public final TextView forecastView;
+        public final TextView maxView;
+        public final TextView minView;
+
+        public ViewHolder(View view) {
+            iconView = (ImageView) view.findViewById(R.id.list_item_icon);
+            dateView = (TextView) view.findViewById(R.id.list_item_date_textview);
+            forecastView = (TextView) view.findViewById(R.id.list_item_forecast_textview);
+            maxView = (TextView) view.findViewById(R.id.list_item_high_textview);
+            minView = (TextView) view.findViewById(R.id.list_item_low_textview);
+        }
     }
 }
