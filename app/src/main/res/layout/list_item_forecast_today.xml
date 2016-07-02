@@ -14,7 +14,6 @@
 
         <TextView
             android:id="@+id/list_item_date_textview"
-            android:text="Today, July 1st"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -23,7 +22,6 @@
 
         <TextView
             android:id="@+id/list_item_high_textview"
-            android:text="26º"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
@@ -32,7 +30,6 @@
 
         <TextView
             android:id="@+id/list_item_low_textview"
-            android:text="15º"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
@@ -58,7 +55,6 @@
 
         <TextView
         android:id="@+id/list_item_forecast_textview"
-        android:text="Clear"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"

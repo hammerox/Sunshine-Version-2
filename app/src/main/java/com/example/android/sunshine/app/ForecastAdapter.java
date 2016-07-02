@@ -92,17 +92,20 @@ public class ForecastAdapter extends CursorAdapter {
         // our view is pretty simple here --- just a text view
         // we'll keep the UI functional with a simple (and slow!) binding.
 
-        String date = Utility.getFriendlyDayString(context,
+        boolean isMetric = Utility.isMetric(context);
+
+        String date = Utility.getFriendlyDayString(
+                context,
                 cursor.getLong(ForecastFragment.COL_WEATHER_DATE));
         String forecast = cursor.getString(ForecastFragment.COL_WEATHER_DESC);
         String max = Utility.formatTemperature(
                 context,
                 cursor.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP),
-                true);
+                isMetric);
         String min = Utility.formatTemperature(
                 context,
                 cursor.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP),
-                true);
+                isMetric);
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
