@@ -42,7 +42,8 @@ public class DetailFragment extends Fragment
             WeatherContract.WeatherEntry.COLUMN_HUMIDITY,
             WeatherContract.WeatherEntry.COLUMN_WIND_SPEED,
             WeatherContract.WeatherEntry.COLUMN_DEGREES,
-            WeatherContract.WeatherEntry.COLUMN_PRESSURE
+            WeatherContract.WeatherEntry.COLUMN_PRESSURE,
+            WeatherContract.WeatherEntry.COLUMN_WEATHER_ID
     };
 
     // these constants correspond to the projection defined above, and must change if the
@@ -56,6 +57,7 @@ public class DetailFragment extends Fragment
     private static final int COL_WEATHER_WIND_SPEED = 6;
     private static final int COL_WEATHER_WIND_DEGREES = 7;
     private static final int COL_WEATHER_PRESSURE = 8;
+    private static final int COL_WEATHER_CONDITION_ID = 9;
 
 
     private ShareActionProvider mShareActionProvider;
@@ -141,7 +143,8 @@ public class DetailFragment extends Fragment
         if (!data.moveToFirst()) { return; }
 
         boolean isMetric = Utility.isMetric(getActivity());
-
+        int weatherIcon = Utility.getArtResourceForWeatherCondition(
+                        data.getInt(COL_WEATHER_CONDITION_ID));
         String day = Utility.getDayName(getActivity(),
                 data.getLong(COL_WEATHER_DATE));
         String dateString = new SimpleDateFormat("MMMM dd").format(
@@ -161,6 +164,7 @@ public class DetailFragment extends Fragment
         String pressure = getActivity().getString(R.string.format_pressure,
                 data.getDouble(COL_WEATHER_PRESSURE));
 
+        iconView.setImageResource(weatherIcon);
         dayView.setText(day);
         dateView.setText(dateString);
         forecastView.setText(weatherDescription);

@@ -94,6 +94,14 @@ public class ForecastAdapter extends CursorAdapter {
 
         boolean isMetric = Utility.isMetric(context);
 
+        int weatherId;
+        if (getItemViewType(cursor.getPosition()) == VIEW_TYPE_TODAY) {
+            weatherId = Utility.getArtResourceForWeatherCondition(
+                    cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID));
+        } else {
+            weatherId = Utility.getIconResourceForWeatherCondition(
+                    cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID));
+        }
         String date = Utility.getFriendlyDayString(
                 context,
                 cursor.getLong(ForecastFragment.COL_WEATHER_DATE));
@@ -109,6 +117,7 @@ public class ForecastAdapter extends CursorAdapter {
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
+        viewHolder.iconView.setImageResource(weatherId);
         viewHolder.dateView.setText(date);
         viewHolder.forecastView.setText(forecast);
         viewHolder.maxView.setText(max);
