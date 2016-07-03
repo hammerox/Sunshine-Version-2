@@ -46,6 +46,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textStyle="bold"
+                    android:textColor="@color/color_high_temperature"
                     android:gravity="center"
                     android:layout_margin="10dp"/>
 
@@ -55,6 +57,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textStyle="bold"
+                    android:textColor="@color/color_low_temperature"
                     android:gravity="center"
                     android:layout_margin="10dp"/>
 

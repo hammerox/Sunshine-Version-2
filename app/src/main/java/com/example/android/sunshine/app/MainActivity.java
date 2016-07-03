@@ -28,20 +28,26 @@ import com.example.android.sunshine.app.data.WeatherContract;
 public class MainActivity extends ActionBarActivity {
 
     private String mLocation;
-    private final String FORECASTFRAGMENT_TAG = "forecast_tag";
+    private boolean mTwoPane;
+    private static final String DETAILFRAGMENT_TAG = "DFTAG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mLocation = Utility.getPreferredLocation(this);
-
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new ForecastFragment(), FORECASTFRAGMENT_TAG)
-                    .commit();
+        if (findViewById(R.id.weather_detail_container) != null) {
+            mTwoPane = true;
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.weather_detail_container, new DetailFragment())
+                        .commit();
+            }
+        } else {
+            mTwoPane = false;
         }
+
+        mLocation = Utility.getPreferredLocation(this);
     }
 
 
@@ -50,7 +56,7 @@ public class MainActivity extends ActionBarActivity {
         super.onResume();
         if (mLocation != Utility.getPreferredLocation(this)) {
             ForecastFragment ff = (ForecastFragment)getSupportFragmentManager()
-                    .findFragmentByTag(FORECASTFRAGMENT_TAG);
+                    .findFragmentById(R.id.fragment_forecast);
             ff.onLocationChanged();
             mLocation = Utility.getPreferredLocation(this);
         }

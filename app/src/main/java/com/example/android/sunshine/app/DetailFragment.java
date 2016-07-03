@@ -186,16 +186,21 @@ public class DetailFragment extends Fragment
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri dataUri = null;
-
         Intent intent = getActivity().getIntent();
-        if (intent != null) {
-            dataUri = intent.getData();
-        } else {
+        if (intent == null || intent.getData() == null) {
             return null;
         }
 
-        return new CursorLoader(getActivity(), dataUri, FORECAST_COLUMNS, null, null, null);
+        // Now create and return a CursorLoader that will take care of
+        // creating a Cursor for the data being displayed.
+        return new CursorLoader(
+                getActivity(),
+                intent.getData(),
+                FORECAST_COLUMNS,
+                null,
+                null,
+                null
+        );
     }
 
 
