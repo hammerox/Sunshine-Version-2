@@ -64,6 +64,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     private int mPosition = -1;
     private ListView mListView;
+    private boolean mUseTodayLayout;
 
     Callback mCallback;
     ForecastAdapter mForecastAdapter;
@@ -110,7 +111,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
 
         mForecastAdapter = new ForecastAdapter(getActivity(), null, 0);
-
+        mForecastAdapter.setUseTodayLayout(mUseTodayLayout);
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         // Get a reference to the ListView, and attach this adapter to it.
@@ -206,5 +207,17 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             outState.putInt(ARG_POSITION, mPosition);
         }
         super.onSaveInstanceState(outState);
+    }
+
+
+    public boolean useTodayLayout() {
+        return mUseTodayLayout;
+    }
+
+    public void setUseTodayLayout(boolean mUseTodayLayout) {
+        this.mUseTodayLayout = mUseTodayLayout;
+        if (mForecastAdapter != null) {
+            mForecastAdapter.setUseTodayLayout(mUseTodayLayout);
+        }
     }
 }

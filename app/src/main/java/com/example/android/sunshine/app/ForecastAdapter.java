@@ -20,43 +20,27 @@ public class ForecastAdapter extends CursorAdapter {
     private final static int VIEW_TYPE_TODAY = 0;
     private final static int VIEW_TYPE_FUTURE_DAY = 1;
 
+    private boolean mUseTodayLayout;
+
     public ForecastAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
-    }
-
-    /**
-     * Prepare the weather high/lows for presentation.
-     */
-    private String formatHighLows(double high, double low) {
-        boolean isMetric = Utility.isMetric(mContext);
-        String highLowStr = Utility.formatTemperature(mContext, high, isMetric) + "/" + Utility.formatTemperature(mContext, low, isMetric);
-        return highLowStr;
-    }
-
-    /*
-        This is ported from FetchWeatherTask --- but now we go straight from the cursor to the
-        string.
-     */
-    private String convertCursorRowToUXFormat(Cursor cursor) {
-
-        String highAndLow = formatHighLows(
-                cursor.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP),
-                cursor.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP));
-
-        return Utility.formatDate(cursor.getLong(ForecastFragment.COL_WEATHER_DATE)) +
-                " - " + cursor.getString(ForecastFragment.COL_WEATHER_DESC) +
-                " - " + highAndLow;
     }
 
 
     @Override
     public int getViewTypeCount() {
-        return 2;
+        if (mUseTodayLayout) {
+            return 2;
+        } else {
+            return 1;
+        }
+
+
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0) {
+        if (position == 0 && mUseTodayLayout) {
             return VIEW_TYPE_TODAY;
         } else {
             return VIEW_TYPE_FUTURE_DAY;
@@ -70,6 +54,8 @@ public class ForecastAdapter extends CursorAdapter {
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         int layoutId = -1;
+
+
 
         if (getItemViewType(cursor.getPosition()) == VIEW_TYPE_TODAY) {
             layoutId = R.layout.list_item_forecast_today;
@@ -140,5 +126,14 @@ public class ForecastAdapter extends CursorAdapter {
             maxView = (TextView) view.findViewById(R.id.list_item_high_textview);
             minView = (TextView) view.findViewById(R.id.list_item_low_textview);
         }
+    }
+
+
+    public boolean useTodayLayout() {
+        return mUseTodayLayout;
+    }
+
+    public void setUseTodayLayout(boolean mUseTodayLayout) {
+        this.mUseTodayLayout = mUseTodayLayout;
     }
 }
