@@ -4,4 +4,7 @@
     <color name="color_high_temperature">#FF0000</color>
     <color name="color_low_temperature">#0026FF</color>
 
+    <color name="grey">#cccccc</color>
+    <color name="sunshine_light_blue">#ff64c2f4</color>
+
 </resources>

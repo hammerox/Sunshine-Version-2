@@ -1,7 +1,6 @@
 package com.example.android.sunshine.app;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -61,6 +60,11 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     static final int COL_COORD_LAT = 7;
     static final int COL_COORD_LONG = 8;
 
+    static final String ARG_POSITION = "clickedPosition";
+
+    private int mPosition = -1;
+    private ListView mListView;
+
     Callback mCallback;
     ForecastAdapter mForecastAdapter;
 
@@ -102,7 +106,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             final Bundle savedInstanceState) {
 
 
         mForecastAdapter = new ForecastAdapter(getActivity(), null, 0);
@@ -110,9 +114,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         // Get a reference to the ListView, and attach this adapter to it.
-        ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
-        listView.setAdapter(mForecastAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView = (ListView) rootView.findViewById(R.id.listview_forecast);
+        mListView.setAdapter(mForecastAdapter);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(i);
@@ -122,9 +126,15 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                         cursor.getLong(COL_WEATHER_DATE)
                 );
 
+                mPosition = i;
+
                 mCallback.onItemSelected(dataURI);
             }
         });
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(ARG_POSITION)) {
+            mPosition = savedInstanceState.getInt(ARG_POSITION);
+        }
 
         return rootView;
     }
@@ -161,6 +171,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mForecastAdapter.swapCursor(data);
+        if (mPosition >= 0) {
+            mListView.smoothScrollToPosition(mPosition);
+        }
     }
 
     @Override
@@ -187,4 +200,11 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (mPosition != -1) {
+            outState.putInt(ARG_POSITION, mPosition);
+        }
+        super.onSaveInstanceState(outState);
+    }
 }
