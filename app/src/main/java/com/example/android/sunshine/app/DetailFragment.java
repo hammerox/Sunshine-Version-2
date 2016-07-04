@@ -33,6 +33,8 @@ public class DetailFragment extends Fragment
 
     private static final int DETAIL_LOADER_ID = 2;
 
+    static final String DETAIL_URI = "detailUri";
+
     private static final String[] FORECAST_COLUMNS = {
             WeatherContract.WeatherEntry.TABLE_NAME + "." + WeatherContract.WeatherEntry._ID,
             WeatherContract.WeatherEntry.COLUMN_DATE,
@@ -59,8 +61,8 @@ public class DetailFragment extends Fragment
     private static final int COL_WEATHER_PRESSURE = 8;
     private static final int COL_WEATHER_CONDITION_ID = 9;
 
-
     private ShareActionProvider mShareActionProvider;
+    private Uri mUri;
 
     private ImageView iconView;
     private TextView dayView;
@@ -91,6 +93,12 @@ public class DetailFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        Bundle args = getArguments();
+        if (args != null) {
+            mUri = args.getParcelable(DETAIL_URI);
+        }
+
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
@@ -186,8 +194,7 @@ public class DetailFragment extends Fragment
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Intent intent = getActivity().getIntent();
-        if (intent == null || intent.getData() == null) {
+        if (mUri == null) {
             return null;
         }
 
@@ -195,7 +202,7 @@ public class DetailFragment extends Fragment
         // creating a Cursor for the data being displayed.
         return new CursorLoader(
                 getActivity(),
-                intent.getData(),
+                mUri,
                 FORECAST_COLUMNS,
                 null,
                 null,
@@ -214,6 +221,18 @@ public class DetailFragment extends Fragment
         mShareIntent.putExtra(Intent.EXTRA_STREAM, forecastString);
 
         return mShareIntent;
+    }
+
+
+    void onLocationChanged( String newLocation ) {
+        // replace the uri, since the location has changed
+        Uri uri = mUri;
+        if (null != uri) {
+            long date = WeatherContract.WeatherEntry.getDateFromUri(uri);
+            Uri updatedUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(newLocation, date);
+            mUri = updatedUri;
+            getLoaderManager().restartLoader(DETAIL_LOADER_ID, null, this);
+        }
     }
 
 }

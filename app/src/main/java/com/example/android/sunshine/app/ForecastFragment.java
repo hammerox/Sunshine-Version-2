@@ -1,5 +1,6 @@
 package com.example.android.sunshine.app;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -60,11 +61,31 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     static final int COL_COORD_LAT = 7;
     static final int COL_COORD_LONG = 8;
 
+    Callback mCallback;
     ForecastAdapter mForecastAdapter;
 
     public ForecastFragment() {
     }
 
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        void onItemSelected(Uri dateUri);
+    }
+
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        try {
+            mCallback = (Callback) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement Callback");
+        }
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -101,9 +122,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                         cursor.getLong(COL_WEATHER_DATE)
                 );
 
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.setData(dataURI);
-                startActivity(intent);
+                mCallback.onItemSelected(dataURI);
             }
         });
 
@@ -166,4 +185,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         updateWeather();
         getLoaderManager().restartLoader(FORECAST_LOADER_ID, null, this);
     }
+
+
 }
